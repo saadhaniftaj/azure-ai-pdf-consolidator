@@ -169,8 +169,11 @@ FORM_RECOGNIZER_KEY="YOUR_AZURE_KEY"
 *   **Startup Command:** Set the command to instruct Gunicorn to run the FastAPI application using the Uvicorn worker:
     ```bash
 gunicorn -w 4 -k uvicorn.workers.UvicornWorker app:app --bind=0.0.0.0 --timeout 180
-```
-    *(Adjust `-w` for the number of workers and `--timeout` as needed).
+
+    
+
+
+
 
 **Deployment Methods:** Common methods include Zip Deploy via Azure CLI, Local Git deployment, or integration with CI/CD pipelines (Azure DevOps, GitHub Actions, etc.).
 
