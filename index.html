@@ -1,220 +1,687 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NISSI FULFILLMENT & DISTRIBUTION</title>
+    <title>ShipSync | AI-Powered Shipping Data Extraction & Consolidation Platform</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="ShipSync - Automated shipping data extraction from scanned PDFs using Azure Cognitive Services, Excel consolidation, and database-ready label printing.">
+    <meta name="keywords"
+        content="shipping data extraction, Azure AI, PDF processing, Excel automation, label printing, data consolidation">
+    <meta name="author" content="ShipSync">
+
+    <link href="https://fonts.googleapis.com/css?family=Inter:400,700,900&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --pearl-white: #f8f9fa;
+            --pearl-dark: #e9ecef;
+            --yellow-primary: #fbbf24;
+            --yellow-dark: #f59e0b;
+            --yellow-light: #fde68a;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --card-white: #ffffff;
+            --card-hover: #fefefe;
+            --border-light: #e5e7eb;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             margin: 0;
-            padding: 0;
-            background: linear-gradient(to bottom right, #f5f5f5, #dddddd);
+            background: #f8f9fa;
+            color: var(--text-dark);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated SVG Background */
+        #svg-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.4;
+        }
+
+        .wave-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* NAVBAR */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            height: 62px;
+            background: var(--card-white);
+            display: flex;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .nav-content {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-weight: 900;
+            font-size: 1.3rem;
+            letter-spacing: -0.03em;
+            color: var(--yellow-dark);
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 38px;
+            width: 38px;
+            margin-right: 10px;
+            border-radius: 8px;
+            box-shadow: 0 0 12px rgba(251, 191, 36, 0.2);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 6px 3px;
+            border-radius: 3px;
+            transition: color 0.17s, background 0.18s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--text-dark);
+            background: rgba(251, 191, 36, 0.13);
+        }
+
+        .nav-cta {
+            margin-left: 1.7rem;
+            background: var(--yellow-primary);
+            color: var(--text-dark);
+            font-weight: 900;
+            border: none;
+            border-radius: 26px;
+            padding: 0.8em 2.1em;
+            font-size: 1.06rem;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(251, 191, 36, 0.3);
+            transition: background 0.22s, color 0.18s, transform 0.16s;
+            position: relative;
+            overflow: hidden;
+            animation: buttonGlow 2s ease-in-out infinite;
+        }
+
+        .nav-cta::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s linear infinite;
+        }
+
+        .nav-cta:hover {
+            background: var(--yellow-dark);
+            transform: scale(1.05);
+        }
+
+        /* HERO */
+        .hero {
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-        }
-        .header-section {
-            background-color: #000080; /* Navy Blue */
-            color: white;
-            width: 100%;
-            padding: 30px 20px;
+            justify-content: center;
             text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 1;
+            position: relative;
+            padding-top: 90px;
+            background: transparent;
         }
-        .header-section h1 {
-            margin: 0;
-            font-size: 2.5em;
-        }
-        .header-section p {
-             margin-top: 10px;
-             font-size: 1.1em;
-        }
-        .header-section .years {
-             margin-top: 5px;
-             font-size: 0.9em;
-             opacity: 0.8;
-        }
-        .content-container {
-            background-color: white;
-            width: 90%;
-            max-width: 700px;
-            margin: 30px auto;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            flex-grow: 1; /* Allow content to grow and push footer down if needed */
-            display: flex;
-            flex-direction: column;
-            align-items: center; /* Center content horizontally */
-        }
-        .upload-section {
-            width: 100%; /* Allow upload section to take full width of container */
-            text-align: center; /* Ensure contents are centered within the section */
-        }
-        .file-input {
-            margin-bottom: 25px;
-        }
-        .file-input input[type="file"] {
-            display: block;
-            width: fit-content; /* Adjust width to content */
-            margin: 0 auto; /* Center the input */
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            background-color: #f9f9f9;
-            cursor: pointer;
-        }
-         .file-input input[type="file"]::-webkit-file-upload-button {
-             visibility: hidden;
-         }
-         .file-input input[type="file"]::before {
-             content: 'Select PDF Files';
-             display: inline-block;
-             background: linear-gradient(top, #f9f9f9, #e3e3e3);
-             border: 1px solid #999;
-             border-radius: 3px;
-             padding: 8px 15px;
-             outline: none;
-             white-space: nowrap;
-             -webkit-user-select: none;
-             cursor: pointer;
-             text-shadow: 1px 1px #fff;
-             font-weight: bold;
-             font-size: 10pt;
-         }
-         .file-input input[type="file"]:hover::before {
-             border-color: black;
-         }
-         .file-input input[type="file"]:active::before {
-             background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
-         }
 
-        .submit-btn {
-            background-color: #007bff;
+        .hero h1 {
+            font-size: clamp(3rem, 6vw, 5rem);
+            background: linear-gradient(92deg, #ea580c 10%, #f97316 40%, #fb923c 70%, #ea580c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: #ea580c;
+            font-weight: 900;
+            animation: textGlow 2s infinite alternate;
+            letter-spacing: -1.2px;
+            line-height: 1.09;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            color: var(--text-light);
+            max-width: 750px;
+            font-size: 1.3rem;
+            line-height: 1.7;
+            margin: 0 auto 2rem;
+        }
+
+        /* STATUS BADGE */
+        .status-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .status-ready {
+            background: #10b981;
             color: white;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: background-color 0.3s ease;
-        }
-        .submit-btn:hover {
-            background-color: #0056b3;
-        }
-        #status {
-            margin-top: 25px;
-            padding: 15px;
-            border-radius: 4px;
-            text-align: left;
-            word-break: break-word;
-            width: 100%; /* Take full width of container for better message display */
-            box-sizing: border-box; /* Include padding and border in element's total width */
-        }
-        .status.success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        .status.error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        .status.processing {
-            background-color: #fff3cd;
-            color: #856404;
-            border: 1px solid #ffeeba;
         }
 
+        /* SECTIONS */
+        section {
+            padding: 3rem 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            letter-spacing: -1px;
+            margin-bottom: 2rem;
+            font-weight: 800;
+            color: var(--text-dark);
+        }
+
+        /* ACTION CARDS */
+        .action-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+            max-width: 1100px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .action-card {
+            background: var(--card-white);
+            border-radius: 20px;
+            box-shadow: 0 3px 20px rgba(0, 0, 0, 0.08);
+            padding: 2.5rem 2rem;
+            transition: box-shadow 0.2s, background 0.18s, transform 0.16s;
+            border: 1px solid var(--border-light);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .action-card:hover {
+            background: var(--card-hover);
+            box-shadow: 0 6px 30px rgba(251, 191, 36, 0.2);
+            transform: translateY(-5px) scale(1.02);
+        }
+
+        .action-card h3 {
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+
+        .action-card p {
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+        }
+
+        .action-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .action-btn {
+            background: var(--yellow-primary);
+            color: var(--text-dark);
+            border: none;
+            padding: 14px 32px;
+            border-radius: 26px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            animation: buttonGlow 2s ease-in-out infinite;
+            width: 100%;
+            max-width: 280px;
+        }
+
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s linear infinite;
+        }
+
+        .action-btn:hover {
+            background: var(--yellow-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(251, 191, 36, 0.4);
+        }
+
+        .action-btn:active {
+            transform: translateY(0);
+        }
+
+        /* File Input Styling */
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            max-width: 280px;
+        }
+
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-selected {
+            margin-top: 10px;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            min-height: 20px;
+        }
+
+        /* FOOTER */
+        footer {
+            background: var(--card-white);
+            color: var(--text-light);
+            text-align: center;
+            padding: 2rem 0 1rem;
+            margin-top: 3rem;
+            border-top: 3px solid var(--yellow-primary);
+        }
+
+        .footer-credit {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin-top: 1rem;
+        }
+
+        /* ANIMATIONS */
+        @keyframes textGlow {
+            0% {
+                filter: brightness(1);
+            }
+
+            100% {
+                filter: brightness(1.2) drop-shadow(0 0 20px rgba(251, 191, 36, 0.6));
+            }
+        }
+
+        @keyframes buttonGlow {
+
+            0%,
+            100% {
+                box-shadow: 0 4px 20px rgba(251, 191, 36, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 4px 30px rgba(251, 191, 36, 0.6), 0 0 20px rgba(251, 191, 36, 0.4);
+            }
+        }
+
+        @keyframes shine {
+            0% {
+                left: -50%;
+            }
+
+            100% {
+                left: 150%;
+            }
+        }
+
+        /* BG Particles */
+        .bg-animation {
+            position: fixed;
+            z-index: -1;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            border-radius: 50%;
+            opacity: 0.95;
+            animation: float 14s linear infinite;
+            background: var(--yellow-primary);
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-110vh);
+                opacity: 0;
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 820px) {
+            .nav-content {
+                padding: 0 1rem;
+            }
+
+            .action-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 620px) {
+            nav {
+                height: 58px;
+            }
+
+            .nav-content {
+                flex-direction: column;
+                gap: 0.32rem;
+            }
+
+            .hero {
+                padding-top: 76px;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .nav-links a {
+                font-size: 0.9rem;
+            }
+        }
     </style>
 </head>
+
 <body>
-    <div class="header-section">
-        <h1>NISSI FULFILLMENT & DISTRIBUTION</h1>
-        <p>the trusted solution for your retail needs</p>
-        <p class="years">30 years in business</p>
-    </div>
+    <!-- Animated SVG Wave Background -->
+    <svg id="svg-background" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
+        <defs>
+            <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:0.3" />
+                <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:0.2" />
+            </linearGradient>
+            <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#fde68a;stop-opacity:0.25" />
+                <stop offset="100%" style="stop-color:#fbbf24;stop-opacity:0.15" />
+            </linearGradient>
+            <linearGradient id="gradient3" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:0.2" />
+                <stop offset="100%" style="stop-color:#fbbf24;stop-opacity:0.1" />
+            </linearGradient>
+        </defs>
 
-    <div class="content-container">
-        <div class="upload-section">
-            <p style="text-align: center; color: #333;">Upload your PDF files below. The system will process them, extract the relevant data, and consolidate it into a single Excel file. The download will start automatically upon completion.</p>
-            <form id="uploadForm" enctype="multipart/form-data">
-                <div class="file-input">
-                    <input type="file" name="files" id="fileInput" multiple accept=".pdf">
-                </div>
-                <button type="submit" class="submit-btn">Process Files</button>
-            </form>
+        <!-- Wave 1 -->
+        <path fill="url(#gradient1)">
+            <animate attributeName="d" dur="20s" repeatCount="indefinite" values="M0,160 C320,300,420,300,740,160 C1060,20,1120,20,1440,160 V320 H0 V160 Z;
+                        M0,100 C320,20,420,20,740,100 C1060,180,1120,180,1440,100 V320 H0 V100 Z;
+                        M0,160 C320,300,420,300,740,160 C1060,20,1120,20,1440,160 V320 H0 V160 Z" />
+        </path>
+
+        <!-- Wave 2 -->
+        <path fill="url(#gradient2)">
+            <animate attributeName="d" dur="15s" repeatCount="indefinite" values="M0,100 C320,180,420,180,740,100 C1060,20,1120,20,1440,100 V320 H0 V100 Z;
+                        M0,160 C320,300,420,300,740,160 C1060,20,1120,20,1440,160 V320 H0 V160 Z;
+                        M0,100 C320,180,420,180,740,100 C1060,20,1120,20,1440,100 V320 H0 V100 Z" />
+        </path>
+
+        <!-- Wave 3 -->
+        <path fill="url(#gradient3)">
+            <animate attributeName="d" dur="25s" repeatCount="indefinite" values="M0,130 C320,250,420,250,740,130 C1060,10,1120,10,1440,130 V320 H0 V130 Z;
+                        M0,80 C320,10,420,10,740,80 C1060,150,1120,150,1440,80 V320 H0 V80 Z;
+                        M0,130 C320,250,420,250,740,130 C1060,10,1120,10,1440,130 V320 H0 V130 Z" />
+        </path>
+    </svg>
+
+    <nav>
+        <div class="nav-content">
+            <a class="logo" href="#home">
+                <img src="https://placehold.co/40x40/f8f9fa/fbbf24?text=SS" alt="ShipSync Logo" />
+                ShipSync
+            </a>
+            <div class="nav-links">
+                <a href="#home" class="active">Home</a>
+                <a href="#actions">Actions</a>
+                <a href="#about">About</a>
+            </div>
+            <button class="nav-cta" onclick="scrollToActions()">Get Started</button>
         </div>
+    </nav>
 
-        <div id="status"></div>
-    </div>
+    <!-- HERO SECTION -->
+    <section id="home" class="hero">
+        <span class="status-badge status-ready">AI-Powered Processing</span>
+        <h1>ShipSync Data Platform</h1>
+        <p>A solution tailored to your document's format, making extraction, processing, and cleaning of thousands of
+            documents in minutes. Transform unstructured data into actionable insights with intelligent AI processing.
+        </p>
+        <button class="nav-cta" onclick="scrollToActions()"
+            style="margin-left: 0; margin-top: 0.5rem; font-size: 1.3rem; padding: 1em 3em;">Extract</button>
+    </section>
+
+    <!-- ACTION CARDS SECTION -->
+    <section id="actions">
+        <div class="container">
+            <h2 class="section-title">Workflow Actions</h2>
+            <div class="action-cards">
+                <!-- Card 1: PDF Extraction -->
+                <div class="action-card">
+                    <span class="action-icon">📄</span>
+                    <h3>Extract PDF Data</h3>
+                    <p>Upload scanned shipping spreadsheet PDFs and extract structured data using Azure Cognitive
+                        Services AI</p>
+                    <div class="file-input-wrapper">
+                        <button class="action-btn">Select PDF Files</button>
+                        <input type="file" id="pdfInput" multiple accept=".pdf" onchange="handlePDFSelection(event)">
+                    </div>
+                    <div class="file-selected" id="pdfSelected"></div>
+                </div>
+
+                <!-- Card 2: Excel Consolidation -->
+                <div class="action-card">
+                    <span class="action-icon">📊</span>
+                    <h3>Consolidate Excel</h3>
+                    <p>Upload multiple Excel files to merge and consolidate all shipping data into a single master
+                        spreadsheet</p>
+                    <div class="file-input-wrapper">
+                        <button class="action-btn">Select Excel Files</button>
+                        <input type="file" id="excelInput" multiple accept=".xlsx,.xls"
+                            onchange="handleExcelSelection(event)">
+                    </div>
+                    <div class="file-selected" id="excelSelected"></div>
+                </div>
+
+                <!-- Card 3: Database Conversion -->
+                <div class="action-card">
+                    <span class="action-icon">🏷️</span>
+                    <h3>Convert to DB Format</h3>
+                    <p>Transform consolidated Excel data into database-ready format for automated label printing system
+                    </p>
+                    <div class="file-input-wrapper">
+                        <button class="action-btn">Select Excel File</button>
+                        <input type="file" id="dbInput" accept=".xlsx,.xls" onchange="handleDBSelection(event)">
+                    </div>
+                    <div class="file-selected" id="dbSelected"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section id="about" style="padding: 4rem 0;">
+        <div class="container">
+            <h2 class="section-title">How It Works</h2>
+            <div
+                style="max-width: 800px; margin: 0 auto; color: var(--text-light); line-height: 1.8; font-size: 1.05rem;">
+                <p style="margin-bottom: 1.5rem;">
+                    <strong style="color: var(--text-dark);">Step 1: PDF Extraction</strong><br>
+                    Upload scanned shipping spreadsheet PDFs. Azure Cognitive Services analyzes each document, extracts
+                    shipping information, and creates structured Excel files with the extracted data.
+                </p>
+                <p style="margin-bottom: 1.5rem;">
+                    <strong style="color: var(--text-dark);">Step 2: Excel Consolidation</strong><br>
+                    Upload multiple Excel files generated from PDF extraction. The system merges all data, removes
+                    duplicates, and creates a comprehensive master spreadsheet.
+                </p>
+                <p style="margin-bottom: 1.5rem;">
+                    <strong style="color: var(--text-dark);">Step 3: Database Conversion</strong><br>
+                    Upload the consolidated Excel file. The system applies formulas and transformations to create a
+                    database-ready file optimized for the label printing system.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <div class="footer-credit">&copy; 2026 ShipSync. AI-Powered Shipping Data Automation Platform.</div>
+        </div>
+    </footer>
 
     <script>
-        document.getElementById('uploadForm').addEventListener('submit', async function(event) {
-            event.preventDefault(); // Prevent default form submission
+        // Scroll to actions
+        function scrollToActions() {
+            document.getElementById('actions').scrollIntoView({ behavior: 'smooth' });
+        }
 
-            const fileInput = document.getElementById('fileInput');
-            const statusDiv = document.getElementById('status');
-            const formData = new FormData();
-
-            // Clear previous status
-            statusDiv.textContent = '';
-            statusDiv.className = '';
-
-            if (fileInput.files.length === 0) {
-                statusDiv.className = 'status error';
-                statusDiv.textContent = 'Please select at least one PDF file.';
-                return;
+        // Handle PDF file selection
+        function handlePDFSelection(event) {
+            const files = event.target.files;
+            const display = document.getElementById('pdfSelected');
+            if (files.length > 0) {
+                display.textContent = `${files.length} PDF file(s) selected`;
+                display.style.color = '#10b981';
+                display.style.fontWeight = '600';
+                console.log('PDF files selected:', files);
+                // TODO: Add backend processing logic here
+            } else {
+                display.textContent = '';
             }
+        }
 
-            // Append each selected file to the FormData object
-            for (const file of fileInput.files) {
-                formData.append('files', file);
+        // Handle Excel file selection for consolidation
+        function handleExcelSelection(event) {
+            const files = event.target.files;
+            const display = document.getElementById('excelSelected');
+            if (files.length > 0) {
+                display.textContent = `${files.length} Excel file(s) selected`;
+                display.style.color = '#10b981';
+                display.style.fontWeight = '600';
+                console.log('Excel files selected:', files);
+                // TODO: Add backend processing logic here
+            } else {
+                display.textContent = '';
             }
+        }
 
-            statusDiv.className = 'status processing';
-            statusDiv.textContent = 'Uploading and processing files... Please wait, this may take a few minutes depending on the number and size of the files.';
-
-            try {
-                const response = await fetch('/process_pdfs/', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (response.ok) {
-                    // If response is OK, it's the Excel file blob
-                    const blob = await response.blob();
-                    const url = window.URL.createObjectURL(blob);
-                    
-                    // Trigger download automatically
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'consolidated_output.xlsx'; // Match the filename from your FastAPI code
-                    document.body.appendChild(a); // Temporarily add to DOM to trigger download
-                    a.click(); // Trigger click
-                    document.body.removeChild(a); // Clean up the temporary link
-                    window.URL.revokeObjectURL(url); // Clean up the temporary URL
-
-                    statusDiv.className = 'status success';
-                    statusDiv.textContent = 'Processing complete. Your download should start automatically.';
-
-                } else {
-                    // Handle potential errors from the server
-                    const errorData = await response.json();
-                    statusDiv.className = 'status error';
-                    statusDiv.textContent = 'Error processing files: ' + (errorData.detail || response.statusText || 'Unknown error.');
-                     console.error('Server error response:', errorData);
-                }
-
-            } catch (error) {
-                statusDiv.className = 'status error';
-                statusDiv.textContent = 'An unexpected error occurred: ' + error.message;
-                console.error('Fetch error:', error);
+        // Handle DB conversion file selection
+        function handleDBSelection(event) {
+            const files = event.target.files;
+            const display = document.getElementById('dbSelected');
+            if (files.length > 0) {
+                display.textContent = `${files.length} file selected`;
+                display.style.color = '#10b981';
+                display.style.fontWeight = '600';
+                console.log('DB conversion file selected:', files);
+                // TODO: Add backend processing logic here
+            } else {
+                display.textContent = '';
             }
+        }
+
+        // Smooth scroll for nav links
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = this.getAttribute('href');
+                document.querySelector(target).scrollIntoView({ behavior: 'smooth' });
+
+                // Update active state
+                document.querySelectorAll('.nav-links a').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            });
         });
     </script>
 </body>
-</html> 
+
+</html>
